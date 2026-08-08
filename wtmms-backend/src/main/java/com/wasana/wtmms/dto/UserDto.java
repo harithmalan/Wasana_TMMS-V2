@@ -43,6 +43,15 @@ public class UserDto {
         private String phone;
         private String department;
         private LocalDateTime createdAt;
+        private boolean twoFaEnabled;
+        private boolean emailNotifications;
+        private boolean lowStockAlerts;
+        private boolean weeklyReports;
+        private boolean aiForecastUpdates;
+        private String language;
+        private String timezone;
+        private String dateFormat;
+        private String currency;
     }
 
     @Data
