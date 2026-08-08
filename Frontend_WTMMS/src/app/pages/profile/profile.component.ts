@@ -66,8 +66,10 @@ export class ProfileComponent implements OnInit {
     };
     this.twoFaEnabled.set(p.twoFaEnabled);
     this.prefs = {
-      language: p.language, timezone: p.timezone,
-      dateFormat: p.dateFormat, currency: p.currency,
+      language: p.language || 'Sinhala / English (Sri Lanka)',
+      timezone: p.timezone || 'Asia/Colombo (UTC+5:30)',
+      dateFormat: p.dateFormat || 'DD/MM/YYYY',
+      currency: p.currency || 'Sri Lankan Rupee (Rs./LKR)',
     };
     this.prefToggles.update(list => list.map(t => ({
       ...t,
