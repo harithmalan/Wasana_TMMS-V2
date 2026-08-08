@@ -6,6 +6,45 @@ export interface User {
   status: string;
   lastLogin: string;
   avatar: string;
+  phone?: string;
+  department?: string;
+  createdAt?: string;
+}
+
+export interface UserProfile extends User {
+  twoFaEnabled: boolean;
+  emailNotifications: boolean;
+  lowStockAlerts: boolean;
+  weeklyReports: boolean;
+  aiForecastUpdates: boolean;
+  language: string;
+  timezone: string;
+  dateFormat: string;
+  currency: string;
+}
+
+export interface ProfileDetailsUpdate {
+  name: string;
+  email: string;
+  phone?: string;
+  department?: string;
+}
+
+export interface PasswordChange {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface PreferencesUpdate {
+  emailNotifications: boolean;
+  lowStockAlerts: boolean;
+  weeklyReports: boolean;
+  aiForecastUpdates: boolean;
+  language: string;
+  timezone: string;
+  dateFormat: string;
+  currency: string;
 }
 
 export interface InventoryItem {

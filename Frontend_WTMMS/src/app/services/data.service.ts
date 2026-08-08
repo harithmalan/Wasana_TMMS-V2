@@ -4,7 +4,8 @@ import { environment } from '../../environments/environment';
 import { tap } from 'rxjs/operators';
 import {
   User, InventoryItem, Customer, Supplier, Order,
-  Notification, RevenueData, InventoryChartData, ForecastData, PieData
+  Notification, RevenueData, InventoryChartData, ForecastData, PieData,
+  UserProfile, ProfileDetailsUpdate, PasswordChange, PreferencesUpdate
 } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
@@ -68,8 +69,7 @@ export class DataService {
     });
   }
 
-  addUser(u: Omit<User, 'id' | 'lastLogin' | 'avatar'>) {
-    // The backend CreateRequest might differ slightly, but we pass what we have
+  addUser(u: Omit<User, 'id' | 'lastLogin' | 'avatar'> & { password: string }) {
     return this.http.post<User>(`${environment.apiUrl}/users`, u).pipe(
       tap(newUser => {
         this._users.update(list => [...list, newUser]);
@@ -90,6 +90,38 @@ export class DataService {
       tap(() => {
         this._users.update(list => list.filter(u => u.id !== id));
       })
+    );
+  }
+
+  // ── Profile (current user) ──────────────────────────────────────────────
+  private _profile = signal<UserProfile | null>(null);
+  readonly profile = this._profile.asReadonly();
+
+  loadProfile() {
+    return this.http.get<UserProfile>(`${environment.apiUrl}/profile`).pipe(
+      tap(data => this._profile.set(data))
+    );
+  }
+
+  updateProfileDetails(payload: ProfileDetailsUpdate) {
+    return this.http.put<UserProfile>(`${environment.apiUrl}/profile`, payload).pipe(
+      tap(data => this._profile.set(data))
+    );
+  }
+
+  changePassword(payload: PasswordChange) {
+    return this.http.put<void>(`${environment.apiUrl}/profile/password`, payload);
+  }
+
+  updatePreferences(payload: PreferencesUpdate) {
+    return this.http.put<UserProfile>(`${environment.apiUrl}/profile/preferences`, payload).pipe(
+      tap(data => this._profile.set(data))
+    );
+  }
+
+  toggleTwoFa() {
+    return this.http.patch<UserProfile>(`${environment.apiUrl}/profile/2fa`, {}).pipe(
+      tap(data => this._profile.set(data))
     );
   }
 

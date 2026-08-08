@@ -40,7 +40,7 @@
               <td style="padding:0.75rem 1rem;color:var(--muted-foreground);">{{ u.email }}</td>
               <td style="padding:0.75rem 1rem;">
                 <span style="display:inline-flex;align-items:center;padding:0.125rem 0.5rem;border-radius:9999px;font-size:0.75rem;font-weight:600;"
-                  [style.background]="getRoleBg(u.role)" [style.color]="getRoleColor(u.role)">{{ u.role }}</span>
+                  [style.background]="getRoleBg(u.role)" [style.color]="getRoleColor(u.role)">{{ roleLabel(u.role) }}</span>
               </td>
               <td style="padding:0.75rem 1rem;">
                 <span style="display:inline-flex;align-items:center;padding:0.125rem 0.5rem;border-radius:9999px;font-size:0.75rem;font-weight:600;"
@@ -91,11 +91,20 @@
             [style.border-color]="formErrors['email'] ? '#dc2626' : 'var(--border)'" />
           @if (formErrors['email']) { <p style="font-size:0.75rem;color:#dc2626;margin-top:0.25rem;">{{ formErrors['email'] }}</p> }
         </div>
+        @if (!editingUser()) {
+          <div>
+            <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Password *</label>
+            <input [(ngModel)]="form.password" type="password" placeholder="Enter password"
+              style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;"
+              [style.border-color]="formErrors['password'] ? '#dc2626' : 'var(--border)'" />
+            @if (formErrors['password']) { <p style="font-size:0.75rem;color:#dc2626;margin-top:0.25rem;">{{ formErrors['password'] }}</p> }
+          </div>
+        }
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
           <div>
             <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Role *</label>
             <select [(ngModel)]="form.role" style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;">
-              @for (r of roles; track r) { <option [value]="r">{{ r }}</option> }
+              @for (r of roles; track r.value) { <option [value]="r.value">{{ r.label }}</option> }
             </select>
           </div>
           <div>
