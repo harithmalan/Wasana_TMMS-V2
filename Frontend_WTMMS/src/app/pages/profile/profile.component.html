@@ -1,0 +1,169 @@
+<div>
+  <div style="margin-bottom:1.25rem;">
+    <h2 style="font-size:1.25rem;color:var(--foreground);">Profile Settings</h2>
+    <p style="font-size:0.875rem;color:var(--muted-foreground);margin-top:0.125rem;">Manage your account details and preferences</p>
+  </div>
+
+  <!-- Avatar Section -->
+  <div style="background:var(--card);border-radius:0.75rem;padding:1.25rem;border:1px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,0.05);margin-bottom:1rem;display:flex;align-items:center;gap:1rem;">
+    <div style="width:4rem;height:4rem;border-radius:50%;background:rgba(92,46,14,0.1);color:var(--primary);font-weight:700;font-size:1.25rem;display:flex;align-items:center;justify-content:center;">MP</div>
+    <div>
+      <p style="font-weight:700;color:var(--foreground);">{{ details.fullName }}</p>
+      <p style="font-size:0.875rem;color:var(--muted-foreground);">{{ details.role }} · {{ details.email }}</p>
+      <p style="font-size:0.75rem;color:var(--muted-foreground);margin-top:0.125rem;">Member since January 2022</p>
+    </div>
+    <button style="margin-left:auto;display:inline-flex;align-items:center;gap:0.375rem;padding:0.375rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--card);color:var(--foreground);font-size:0.875rem;font-weight:600;cursor:pointer;">Change Photo</button>
+  </div>
+
+  <!-- Tabs -->
+  <div style="display:flex;gap:0.25rem;margin-bottom:1rem;background:var(--muted);border-radius:0.5rem;padding:0.25rem;width:fit-content;">
+    @for (tab of tabs; track tab.id) {
+      <button (click)="setTab(tab.id)"
+        style="display:flex;align-items:center;gap:0.375rem;padding:0.375rem 1rem;border-radius:0.375rem;font-size:0.875rem;font-weight:600;border:none;cursor:pointer;transition:all 0.15s;"
+        [style.background]="activeTab() === tab.id ? 'var(--card)' : 'transparent'"
+        [style.color]="activeTab() === tab.id ? 'var(--foreground)' : 'var(--muted-foreground)'"
+        [style.box-shadow]="activeTab() === tab.id ? '0 1px 2px rgba(0,0,0,0.05)' : 'none'">
+        <svg style="width:0.875rem;height:0.875rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          @switch (tab.icon) {
+            @case ('users') { <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/> }
+            @case ('lock') { <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/> }
+            @case ('sliders') { <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/> }
+          }
+        </svg>
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+
+  <div style="background:var(--card);border-radius:0.75rem;padding:1.5rem;border:1px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+
+    <!-- Details Tab -->
+    @if (activeTab() === 'details') {
+      <div class="details-grid" style="max-width:42rem;">
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Full Name</label>
+          <input [(ngModel)]="details.fullName"
+            style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;"
+            [style.border]="detailErrors['fullName'] ? '1px solid #dc2626' : '1px solid var(--border)'" />
+          @if (detailErrors['fullName']) { <p style="font-size:0.75rem;color:#dc2626;margin-top:0.25rem;">{{ detailErrors['fullName'] }}</p> }
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Username</label>
+          <input [(ngModel)]="details.username" style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;" />
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Email Address</label>
+          <input [(ngModel)]="details.email" type="email"
+            style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;"
+            [style.border]="detailErrors['email'] ? '1px solid #dc2626' : '1px solid var(--border)'" />
+          @if (detailErrors['email']) { <p style="font-size:0.75rem;color:#dc2626;margin-top:0.25rem;">{{ detailErrors['email'] }}</p> }
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Phone Number</label>
+          <input [(ngModel)]="details.phone" style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;" />
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Department</label>
+          <input [(ngModel)]="details.department" style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;" />
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Role</label>
+          <input [(ngModel)]="details.role" style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;" />
+        </div>
+        <div class="details-actions" style="display:flex;justify-content:flex-end;gap:0.5rem;padding-top:0.5rem;">
+          <button (click)="cancelDetails()" style="padding:0.375rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--card);color:var(--foreground);font-size:0.875rem;font-weight:600;cursor:pointer;">Cancel</button>
+          <button (click)="saveDetails()" style="padding:0.375rem 0.75rem;border-radius:0.5rem;background:var(--primary);color:var(--primary-foreground);font-size:0.875rem;font-weight:600;border:none;cursor:pointer;">Save Changes</button>
+        </div>
+      </div>
+    }
+
+    <!-- Security Tab -->
+    @if (activeTab() === 'security') {
+      <div style="max-width:28rem;display:flex;flex-direction:column;gap:1rem;">
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Current Password</label>
+          <input type="password" [(ngModel)]="security.current" placeholder="Enter current password"
+            style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;"
+            [style.border]="securityErrors['current'] ? '1px solid #dc2626' : '1px solid var(--border)'" />
+          @if (securityErrors['current']) { <p style="font-size:0.75rem;color:#dc2626;margin-top:0.25rem;">{{ securityErrors['current'] }}</p> }
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">New Password</label>
+          <input type="password" [(ngModel)]="security.newPass" placeholder="Enter new password"
+            style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;"
+            [style.border]="securityErrors['newPass'] ? '1px solid #dc2626' : '1px solid var(--border)'" />
+          @if (securityErrors['newPass']) { <p style="font-size:0.75rem;color:#dc2626;margin-top:0.25rem;">{{ securityErrors['newPass'] }}</p> }
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Confirm Password</label>
+          <input type="password" [(ngModel)]="security.confirm" placeholder="Confirm new password"
+            style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;"
+            [style.border]="securityErrors['confirm'] ? '1px solid #dc2626' : '1px solid var(--border)'" />
+          @if (securityErrors['confirm']) { <p style="font-size:0.75rem;color:#dc2626;margin-top:0.25rem;">{{ securityErrors['confirm'] }}</p> }
+        </div>
+        <div style="display:flex;justify-content:flex-end;padding-top:0.5rem;">
+          <button (click)="updatePassword()" style="padding:0.375rem 0.75rem;border-radius:0.5rem;background:var(--primary);color:var(--primary-foreground);font-size:0.875rem;font-weight:600;border:none;cursor:pointer;">Update Password</button>
+        </div>
+        <div style="padding-top:1rem;border-top:1px solid var(--border);">
+          <p style="font-size:0.875rem;font-weight:600;color:var(--foreground);margin-bottom:0.75rem;">Two-Factor Authentication</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem;border-radius:0.5rem;background:rgba(237,228,216,0.5);">
+            <div>
+              <p style="font-size:0.875rem;color:var(--foreground);">Authenticator App</p>
+              <p style="font-size:0.75rem;color:var(--muted-foreground);">{{ twoFaEnabled() ? 'Enabled' : 'Currently disabled' }}</p>
+            </div>
+            <button (click)="toggleTwoFa()" style="padding:0.375rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--card);color:var(--foreground);font-size:0.875rem;font-weight:600;cursor:pointer;">
+              {{ twoFaEnabled() ? 'Disable 2FA' : 'Enable 2FA' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Preferences Tab -->
+    @if (activeTab() === 'prefs') {
+      <div style="max-width:32rem;display:flex;flex-direction:column;gap:1rem;">
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Language</label>
+          <select [(ngModel)]="prefs.language" style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;">
+            <option>Sinhala / English (Sri Lanka)</option><option>English (US)</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Time Zone</label>
+          <select [(ngModel)]="prefs.timezone" style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;">
+            <option>Asia/Colombo (UTC+5:30)</option><option>UTC</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Date Format</label>
+          <select [(ngModel)]="prefs.dateFormat" style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;">
+            <option>DD/MM/YYYY</option><option>MM/DD/YYYY</option><option>YYYY-MM-DD</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Currency</label>
+          <select [(ngModel)]="prefs.currency" style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;">
+            <option>Sri Lankan Rupee (Rs./LKR)</option><option>USD</option>
+          </select>
+        </div>
+        <div style="display:flex;flex-direction:column;padding-top:0.5rem;">
+          @for (pref of prefToggles(); track pref.label; let i = $index) {
+            <label style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;cursor:pointer;border-bottom:1px solid var(--border);">
+              <span style="font-size:0.875rem;color:var(--foreground);">{{ pref.label }}</span>
+              <input type="checkbox" [checked]="pref.enabled" (change)="togglePref(i)" style="width:1rem;height:1rem;accent-color:var(--primary);cursor:pointer;" />
+            </label>
+          }
+        </div>
+        <div style="display:flex;justify-content:flex-end;padding-top:0.5rem;">
+          <button (click)="savePrefs()" style="padding:0.375rem 0.75rem;border-radius:0.5rem;background:var(--primary);color:var(--primary-foreground);font-size:0.875rem;font-weight:600;border:none;cursor:pointer;">Save Preferences</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<style>
+  .details-grid { display:grid; grid-template-columns:1fr; gap:1rem; }
+  .details-actions { grid-column: 1 / -1; }
+  @media (min-width: 640px) { .details-grid { grid-template-columns: repeat(2,1fr); } }
+</style>

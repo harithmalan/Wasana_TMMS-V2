@@ -1,0 +1,166 @@
+<div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+    <div>
+      <h2 style="font-size:1.25rem;color:var(--foreground);">Supplier Management</h2>
+      <p style="font-size:0.875rem;color:var(--muted-foreground);margin-top:0.125rem;">Monitor supplier performance and relationships</p>
+    </div>
+    <button (click)="openAdd()" style="display:inline-flex;align-items:center;gap:0.375rem;padding:0.375rem 0.75rem;border-radius:0.5rem;background:var(--primary);color:var(--primary-foreground);font-size:0.875rem;font-weight:600;border:none;cursor:pointer;">
+      <svg style="width:0.875rem;height:0.875rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Supplier
+    </button>
+  </div>
+
+  <div class="suppliers-summary">
+    @for (card of summaryCards; track card.label) {
+      <div style="background:var(--card);border-radius:0.75rem;padding:1rem;border:1px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,0.05);text-align:center;">
+        <p style="font-size:1.125rem;font-weight:700;color:var(--foreground);font-family:'DM Mono',monospace;">{{ card.value }}</p>
+        <p style="font-size:0.75rem;color:var(--muted-foreground);margin-top:0.125rem;">{{ card.label }}</p>
+      </div>
+    }
+  </div>
+
+  <div style="background:var(--card);border-radius:0.75rem;border:1px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,0.05);overflow:hidden;">
+    <div style="padding:1rem;border-bottom:1px solid var(--border);">
+      <div style="position:relative;">
+        <svg style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);width:1rem;height:1rem;color:var(--muted-foreground);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search suppliers..." [value]="search()" (input)="onSearch($any($event.target).value)"
+          style="width:100%;padding:0.5rem 1rem 0.5rem 2.25rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;" />
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:0.875rem;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);background:rgba(237,228,216,0.4);">
+            @for (h of ['Supplier','Country','Materials','Rating','On-Time %','Last Order','Status','Actions']; track h) {
+              <th style="text-align:left;padding:0.75rem 1rem;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted-foreground);">{{ h }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of filtered(); track s.id) {
+            <tr style="border-bottom:1px solid var(--border);" class="table-row-hover">
+              <td style="padding:0.75rem 1rem;">
+                <div>
+                  <p style="font-weight:600;color:var(--foreground);">{{ s.name }}</p>
+                  <p style="font-size:0.75rem;color:var(--muted-foreground);">{{ s.contact }} · {{ s.email }}</p>
+                </div>
+              </td>
+              <td style="padding:0.75rem 1rem;font-size:0.75rem;color:var(--muted-foreground);">
+                <div style="display:flex;align-items:center;gap:0.375rem;">
+                  <svg style="width:0.75rem;height:0.75rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  {{ s.country }}
+                </div>
+              </td>
+              <td style="padding:0.75rem 1rem;font-size:0.75rem;color:var(--muted-foreground);">{{ s.materials }}</td>
+              <td style="padding:0.75rem 1rem;">
+                <div style="display:flex;align-items:center;gap:0.25rem;">
+                  <svg style="width:0.75rem;height:0.75rem;fill:#fbbf24;color:#fbbf24;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <span style="font-size:0.75rem;font-family:'DM Mono',monospace;font-weight:600;color:var(--foreground);">{{ s.rating }}</span>
+                </div>
+              </td>
+              <td style="padding:0.75rem 1rem;">
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                  <div style="width:3.5rem;height:6px;background:var(--muted);border-radius:999px;overflow:hidden;">
+                    <div style="height:100%;background:var(--accent);border-radius:999px;" [style.width]="s.onTime + '%'"></div>
+                  </div>
+                  <span style="font-size:0.75rem;font-family:'DM Mono',monospace;color:var(--foreground);">{{ s.onTime }}%</span>
+                </div>
+              </td>
+              <td style="padding:0.75rem 1rem;font-size:0.75rem;font-family:'DM Mono',monospace;color:var(--muted-foreground);">{{ s.lastOrder }}</td>
+              <td style="padding:0.75rem 1rem;">
+                <span style="display:inline-flex;align-items:center;padding:0.125rem 0.5rem;border-radius:9999px;font-size:0.75rem;font-weight:600;"
+                  [style.background]="statusBadge(s.status).bg" [style.color]="statusBadge(s.status).color">{{ s.status }}</span>
+              </td>
+              <td style="padding:0.75rem 1rem;">
+                <div style="display:flex;gap:0.25rem;">
+                  <button (click)="openEdit(s)" style="padding:0.375rem;border-radius:0.25rem;border:none;background:none;cursor:pointer;color:var(--muted-foreground);" title="Edit">
+                    <svg style="width:0.875rem;height:0.875rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <button (click)="confirmDelete(s)" style="padding:0.375rem;border-radius:0.25rem;border:none;background:none;cursor:pointer;color:var(--muted-foreground);" title="Delete">
+                    <svg style="width:0.875rem;height:0.875rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+@if (showModal()) {
+  <div style="position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;" (click)="closeModal()">
+    <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);"></div>
+    <div style="position:relative;background:var(--card);border-radius:0.75rem;padding:1.5rem;width:100%;max-width:32rem;box-shadow:0 20px 60px rgba(0,0,0,0.3);border:1px solid var(--border);max-height:90vh;overflow-y:auto;" (click)="$event.stopPropagation()">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+        <h3 style="font-size:1rem;font-weight:700;color:var(--foreground);">{{ editingSupplier() ? 'Edit Supplier' : 'Add New Supplier' }}</h3>
+        <button (click)="closeModal()" style="background:none;border:none;cursor:pointer;color:var(--muted-foreground);padding:0.25rem;">
+          <svg style="width:1rem;height:1rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div style="grid-column:1/-1;">
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Company Name *</label>
+          <input [(ngModel)]="form.name" placeholder="e.g. Ruhunu Wood Suppliers"
+            style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;"
+            [style.border]="formErrors['name'] ? '1px solid #dc2626' : '1px solid var(--border)'" />
+          @if (formErrors['name']) { <p style="font-size:0.75rem;color:#dc2626;margin-top:0.25rem;">{{ formErrors['name'] }}</p> }
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Contact Person *</label>
+          <input [(ngModel)]="form.contact" placeholder="Full name"
+            style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;"
+            [style.border]="formErrors['contact'] ? '1px solid #dc2626' : '1px solid var(--border)'" />
+          @if (formErrors['contact']) { <p style="font-size:0.75rem;color:#dc2626;margin-top:0.25rem;">{{ formErrors['contact'] }}</p> }
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Email *</label>
+          <input [(ngModel)]="form.email" type="email" placeholder="info@supplier.lk"
+            style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;"
+            [style.border]="formErrors['email'] ? '1px solid #dc2626' : '1px solid var(--border)'" />
+          @if (formErrors['email']) { <p style="font-size:0.75rem;color:#dc2626;margin-top:0.25rem;">{{ formErrors['email'] }}</p> }
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Phone *</label>
+          <input [(ngModel)]="form.phone" placeholder="077 000 0000"
+            style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;"
+            [style.border]="formErrors['phone'] ? '1px solid #dc2626' : '1px solid var(--border)'" />
+          @if (formErrors['phone']) { <p style="font-size:0.75rem;color:#dc2626;margin-top:0.25rem;">{{ formErrors['phone'] }}</p> }
+        </div>
+        <div style="grid-column:1/-1;">
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Materials Supplied *</label>
+          <input [(ngModel)]="form.materials" placeholder="e.g. Teak Wood, Jack Wood"
+            style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;"
+            [style.border]="formErrors['materials'] ? '1px solid #dc2626' : '1px solid var(--border)'" />
+          @if (formErrors['materials']) { <p style="font-size:0.75rem;color:#dc2626;margin-top:0.25rem;">{{ formErrors['materials'] }}</p> }
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">On-Time % (0–100)</label>
+          <input [(ngModel)]="form.onTime" type="number" min="0" max="100" placeholder="90"
+            style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;" />
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">Status</label>
+          <select [(ngModel)]="form.status" style="width:100%;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--input-background);font-size:0.875rem;color:var(--foreground);outline:none;">
+            @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:0.5rem;margin-top:1.5rem;">
+        <button (click)="closeModal()" style="padding:0.5rem 1rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--card);color:var(--foreground);font-size:0.875rem;font-weight:600;cursor:pointer;">Cancel</button>
+        <button (click)="save()" style="padding:0.5rem 1rem;border-radius:0.5rem;background:var(--primary);color:var(--primary-foreground);font-size:0.875rem;font-weight:600;border:none;cursor:pointer;">
+          {{ editingSupplier() ? 'Save Changes' : 'Add Supplier' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<style>
+  .suppliers-summary { display:grid; grid-template-columns:repeat(2,1fr); gap:0.75rem; margin-bottom:1.25rem; }
+  .table-row-hover:hover { background: rgba(237,228,216,0.3); }
+  .dark .table-row-hover:hover { background: rgba(61,32,16,0.3); }
+  @media (min-width: 1280px) { .suppliers-summary { grid-template-columns: repeat(4,1fr); } }
+</style>

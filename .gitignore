@@ -1,0 +1,22 @@
+# Frontend (Angular)
+Frontend_WTMMS/node_modules/
+Frontend_WTMMS/dist/
+Frontend_WTMMS/.angular/
+Frontend_WTMMS/.vscode/
+
+# Backend (Spring Boot)
+wtmms-backend/target/
+wtmms-backend/.mvn/wrapper/maven-wrapper.jar
+wtmms-backend/.idea/
+*.class
+*.jar
+*.war
+
+# AI (Python)
+wtmms-ai/venv/
+wtmms-ai/__pycache__/
+wtmms-ai/*.pyc
+
+# OS Files
+.DS_Store
+Thumbs.db
